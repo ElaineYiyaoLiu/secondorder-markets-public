@@ -66,6 +66,6 @@ export default function Markets(){
     <details className="method"><summary>{t('How we read the chart','怎么看出来的？')}</summary><p>{t('We compare the open and close, the length of the wicks, and how volume differs from its recent average. Daily candles don’t show the order in which the high and low occurred.','我们对比开盘和收盘、上下影线的长度，以及成交量与近期平均水平的差别。日 K 看不出最高价和最低价谁先出现。')}</p></details>
    </aside>
   </div>
-  <footer><span>SecondOrder Markets</span><span>{t('Markets, translated.','把行情讲明白')}</span><span>V0.3</span></footer>
+  <footer><span>SecondOrder Markets</span><span>{t('Markets, translated.','把行情讲明白')}</span><span>v0.1</span></footer>
  </main>;
 }
