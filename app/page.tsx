@@ -41,7 +41,7 @@ export default function Markets(){
  const tool={name:'read_candle_translation',description:'Read the plain-language explanation of a completed daily candle for the selected stock.',inputSchema:{type:'object',properties:{date:{type:'string'}},required:['date'],additionalProperties:false},annotations:{readOnlyHint:true},execute:async(input:unknown)=>{const date=(input as {date?:string})?.date,candle=data.rows.find(r=>r.date===date);if(!candle)throw new Error('Date outside available history');return {symbol:data.symbol,date,source:data.source,translation:candleTranslation(candle,lang)};}};
  void Promise.resolve(context.registerTool(tool,{signal:controller.signal})).catch(()=>{});return()=>controller.abort();},[data,lang]);
  return <main className="terminal">
-  <header className="topbar"><a className="brand" href="/"><span>SecondOrder Markets{zh && <small>二阶效应</small>}</span></a><ProjectDetails zh={zh} /><span className="edition">v0.2</span><div className="lang" aria-label={t('Language','语言')}><button aria-pressed={!zh} className={!zh?'active':''} onClick={()=>setLang('en')}>EN</button><button aria-pressed={zh} className={zh?'active':''} onClick={()=>setLang('zh')}>中文</button></div></header>
+  <header className="topbar"><a className="brand" href="/"><span>SecondOrder Markets{zh && <small>二阶效应</small>}</span></a><ProjectDetails zh={zh} /><span className="edition">v0.1</span><div className="lang" aria-label={t('Language','语言')}><button aria-pressed={!zh} className={!zh?'active':''} onClick={()=>setLang('en')}>EN</button><button aria-pressed={zh} className={zh?'active':''} onClick={()=>setLang('zh')}>中文</button></div></header>
   <div className="terminal-body">
    <aside className="stock-sidebar"><Tabs value={listTab} onValueChange={setListTab}><TabsList variant="line"><TabsTrigger value="watchlist">{t('Watchlist','自选股')} <small>{watchlist.length}</small></TabsTrigger><TabsTrigger value="all">{t('All stocks','全部股票')}</TabsTrigger></TabsList><TabsContent value={listTab} className="stock-tab-content">
     <div className="sidebar-search"><Search size={15}/><Input value={query} onChange={e=>setQuery(e.target.value)} placeholder={t('Ticker / company','代码 / 公司名称')} aria-label={t('Search stocks','搜索股票')}/></div>
@@ -67,6 +67,6 @@ export default function Markets(){
     <details className="method"><summary>{t('How we read the chart','怎么看出来的？')}</summary><p>{t('We compare the open and close, the length of the wicks, and how volume differs from its recent average. Daily candles don’t show the order in which the high and low occurred.','我们对比开盘和收盘、上下影线的长度，以及成交量与近期平均水平的差别。日 K 看不出最高价和最低价谁先出现。')}</p></details>
    </aside>
   </div>
-  <footer><span>SecondOrder Markets</span><span>{t('Markets, translated.','把行情讲明白')}</span><span>v0.2</span></footer>
+  <footer><span>SecondOrder Markets</span><span>{t('Markets, translated.','把行情讲明白')}</span><span>v0.1</span></footer>
  </main>;
 }
