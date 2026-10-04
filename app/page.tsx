@@ -13,13 +13,13 @@ import {Candles} from './candles';
 const defaults=['NVDA','AAPL','MSFT','TSLA','AMZN','META','SPY','QQQ'];
 const windows:Record<string,number>={'1M':22,'3M':63,'6M':126,'1Y':252,'2Y':504};
 export default function Markets(){
- const [lang,setLang]=useState<Lang>('zh'),[symbol,setSymbol]=useState('NVDA'),[query,setQuery]=useState(''),[listTab,setListTab]=useState('watchlist');
+ const [lang,setLang]=useState<Lang>('en'),[symbol,setSymbol]=useState('NVDA'),[query,setQuery]=useState(''),[listTab,setListTab]=useState('watchlist');
  const [watchlist,setWatchlist]=useState<string[]>(defaults),[ready,setReady]=useState(false);
  const [data,setData]=useState<MarketData>(()=>({symbol:'NVDA',rows:demoCandles('NVDA'),source:'demo',asOf:'2025-06-30',reason:'not-configured'}));
  const [loading,setLoading]=useState(true),[retry,setRetry]=useState(0),[period,setPeriod]=useState('1Y'),[count,setCount]=useState(252),[offset,setOffset]=useState(0);
  const [active,setActive]=useState(0),[selection,setSelection]=useState<[number,number]|null>(null),[selectMode,setSelectMode]=useState(false),[readTab,setReadTab]=useState('selected');
  const zh=lang==='zh',t=(en:string,cn:string)=>zh?cn:en;
- useEffect(()=>{try{const stored=localStorage.getItem('secondorder-markets-lang');if(stored==='en'||stored==='zh')setLang(stored);const w=JSON.parse(localStorage.getItem('secondorder-markets-watchlist-v1')??'null');if(Array.isArray(w))setWatchlist([...new Set(w.filter((s:unknown)=>typeof s==='string'&&stocks.some(st=>st.symbol===s)))] as string[]);}catch{}setReady(true);},[]);
+ useEffect(()=>{try{const w=JSON.parse(localStorage.getItem('secondorder-markets-watchlist-v1')??'null');if(Array.isArray(w))setWatchlist([...new Set(w.filter((s:unknown)=>typeof s==='string'&&stocks.some(st=>st.symbol===s)))] as string[]);}catch{}setReady(true);},[]);
  useEffect(()=>{document.documentElement.lang=zh?'zh-CN':'en';if(!ready)return;try{localStorage.setItem('secondorder-markets-lang',lang);localStorage.setItem('secondorder-markets-watchlist-v1',JSON.stringify(watchlist));}catch{}},[lang,zh,watchlist,ready]);
  useEffect(()=>{const abort=new AbortController();setLoading(true);setSelection(null);
  fetch(`/api/market?symbol=${symbol}`,{signal:abort.signal}).then(r=>{if(!r.ok)throw new Error();return r.json() as Promise<MarketData>;}).then(d=>{if(d.symbol!==symbol||!Array.isArray(d.rows)||d.rows.length<26||!d.rows.every(validCandle))throw new Error();setData(d);setLoading(false);setOffset(0);}).catch(()=>{if(abort.signal.aborted)return;const rows=demoCandles(symbol);setData({symbol,rows,source:'demo',asOf:rows.at(-1)!.date,reason:'unavailable'});setLoading(false);setOffset(0);});return()=>abort.abort();
